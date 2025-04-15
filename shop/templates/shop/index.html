@@ -1,0 +1,81 @@
+{% extends 'shop/layouts/main.html' %}
+
+{% block title %}
+  EBAY
+{% endblock title %}
+
+{% block content %}
+{% load static %}
+
+{% include 'shop/inc/slider.html' %}
+
+<div class="text-center mb-6">
+  <img src="{% static 'images/logo.png' %}" alt="ShopKart Logo" class="img-fluid" style="max-height: 100px;">
+</div>
+<div class="container my-5" style="margin-top: 70px;">
+  <div class="row mb-4">
+    <div class="col-12 text-center">
+      <h2 class="fw-bold text-success">🔥 Trending Products</h2>
+      <p class="text-muted">Discover our most popular and best-selling items today!</p>
+      <hr class="w-25 mx-auto" style="border-color: #28a745;">
+    </div>
+  </div>
+
+  <div class="row">
+    {% for item in products %}
+    <div class="col-md-6 col-lg-4 col-xl-3">
+      <div class="card shadow-sm border-0 mb-4 product-card h-100">
+        <div class="position-relative">
+          <img src="{{ item.product_image.url }}" class="card-img-top img-fluid" alt="{{ item.name }}">
+          <span class="badge bg-danger position-absolute top-0 start-0 m-2">Trending</span>
+        </div>
+        <a href="{% url 'collections' item.name %}" class="text-decoration-none">
+          <div class="card-body">
+            <h5 class="card-title text-dark fw-semibold">{{ item.name }}</h5>
+            <p class="card-text d-flex justify-content-between align-items-center">
+              <span class="text-muted"><s>₹{{ item.original_price | stringformat:'d' }}</s></span>
+              <span class="text-success fw-bold fs-5">₹{{ item.selling_price | stringformat:'d' }}</span>
+            </p>
+          </div>
+        </a>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+      <p class="text-muted fs-4">No trending products found at the moment.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Custom styles -->
+<style>
+  .product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-img-top {
+    height: 220px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+
+  .card-title {
+    min-height: 48px;
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    border-radius: 8px;
+  }
+</style>
+
+{% endblock content %}

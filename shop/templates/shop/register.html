@@ -1,0 +1,88 @@
+{% extends 'shop/layouts/main.html' %}
+
+{% block title %}
+  Register | Etsy
+{% endblock title %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="margin-top: 70px; min-height: 80vh;">
+  <div class="row w-100">
+    <div class="col-md-8 offset-md-2">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-5">
+          <h2 class="text-center text-primary mb-4">
+            <i class="bi bi-person-plus me-2"></i>Create Your Account
+          </h2>
+          <hr class="mb-4" style="border-color: #b8bfc2;">
+          {% include 'shop/inc/message.html' %}
+          <form method="post" action="">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Username</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                {{ form.username }}
+              </div>
+              {% if form.errors.username %}
+                <small class="text-danger">{{ form.errors.username }}</small>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Email</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                {{ form.email }}
+              </div>
+              {% if form.errors.email %}
+                <small class="text-danger">{{ form.errors.email }}</small>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Password</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                {{ form.password }}
+              </div>
+              {% if form.errors.password1 %}
+                <small class="text-danger">{{ form.errors.password1 }}</small>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Confirm Password</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                {{ form.password2 }}
+              </div>
+              {% if form.errors.password2 %}
+                <small class="text-danger">{{ form.errors.password2 }}</small>
+              {% endif %}
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-success btn-lg rounded-pill">
+                <i class="bi bi-person-check me-2"></i>Register
+              </button>
+            </div>
+            <p class="text-center text-muted mt-3">
+              Already have an account?
+              <a href="{% url 'login' %}" class="text-decoration-none text-primary fw-bold">Login here</a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Optional: custom styling -->
+<style>
+  .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  }
+</style>
+{% endblock content %}

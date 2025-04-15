@@ -1,0 +1,98 @@
+{% extends 'shop/layouts/main.html' %}
+{% block title %}
+  Register
+{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<!-- Hero Section: Bestsellers -->
+<section class="py-5 text-center container" style="margin-top: 70px;">
+  <div class="row py-lg-5">
+    <div class="col-lg-8 col-md-10 mx-auto">
+      <h1 class="fw-bold display-5 text-success">
+        <i class="bi bi-star-fill"></i> Bestsellers
+      </h1>
+      <!-- Logo-->
+<div class="text-center mb-4">
+  <img src="{% static 'images/logo.png' %}" alt="ShopKart Logo" class="img-fluid" style="max-height: 80px;">
+</div>
+      <p class="lead text-muted mt-3">Our most popular products based on sales. Updated hourly to ensure you stay ahead of the trends!</p>
+      <div class="mt-4 d-flex justify-content-center gap-3">
+        <a href="#" class="btn btn-lg btn-outline-primary px-4 rounded-pill shadow-sm">Already a User</a>
+        <a href="#" class="btn btn-lg btn-success px-4 rounded-pill shadow-sm">Register Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Categories Section -->
+<section class="bg-light py-5">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-12 text-center">
+        <h3 class="fw-semibold text-dark">
+          <i class="bi bi-grid-fill"></i> Shop by Categories
+        </h3>
+        <hr class="mx-auto" style="width: 60px; height: 3px; background-color: #28a745;">
+      </div>
+    </div>
+
+    <div class="row g-4">
+      {% for item in catagory %}
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <a href="{% url 'collections' item.name %}" class="text-decoration-none">
+          <div class="card h-100 border-0 shadow-sm category-card hover-shadow">
+            <img src="{{ item.image.url }}" class="card-img-top rounded-top" alt="{{ item.name }}">
+            <div class="card-body">
+              <h5 class="card-title text-success fw-bold">{{ item.name }}</h5>
+              <p class="card-text text-muted">{{ item.description|truncatewords:15 }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Custom CSS -->
+<style>
+  .category-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+  }
+
+  .category-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-img-top {
+    height: 220px;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+  }
+
+  .btn-outline-primary {
+    border-width: 2px;
+  }
+
+  .btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+  }
+
+  @media (max-width: 576px) {
+    .card-img-top {
+      height: 180px;
+    }
+  }
+</style>
+
+{% endblock content %}

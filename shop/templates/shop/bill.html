@@ -1,0 +1,220 @@
+-- Active: 1744560462454@@127.0.0.1@3306@django
+{% extends 'shop/cart.html' %}
+{% load static %}
+
+{% block title %}
+    Order Receipt | Etsy
+{% endblock title %}
+
+{% block content %}
+<section class="bg-light py-5 my-5">
+  <div class="container shadow rounded p-4 bg-white" id="receipt-container">
+    
+    <!-- Header -->
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-success">🧾 Order Receipt</h2>
+      <p class="text-muted">Thank you for shopping with <strong>Etsy</strong>!</p>
+      <hr class="w-50 mx-auto" style="border-color:#b8bfc2;">
+    </div>
+
+    <!-- Logo-->
+    <div class="text-center mb-4">
+      <img src="{% static 'images/logo.png' %}" alt="Etsy Logo" class="img-fluid" style="max-height: 80px;">
+    </div>
+
+    <!-- Order & Customer Info -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <h5><strong>Customer Name:</strong> {{ customer_name }}</h5>
+        <h5><strong>Order Date:</strong> {{ now|date:"d M, Y h:i A" }}</h5>
+      </div>
+      <div class="col-md-6 text-md-end mt-3 mt-md-0">
+        <h5><strong>Total Products:</strong> <span id="total_products">0</span></h5>
+        <h5><strong>Net Total:</strong> Rs. <span id="net_total">0.00</span></h5>
+      </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="table-responsive mb-4">
+      <table class="table table-bordered table-striped text-center align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Total (Rs.)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cart %}
+          <tr>
+            <td><img src="{{ item.product.product_image.url }}" height="50" class="rounded" alt="{{ item.product.name }}"></td>
+            <td>{{ item.product.name }}</td>
+            <td class="qty">{{ item.product_qty }}</td>
+            <td class="amt">Rs. {{ item.total_cost|floatformat:2 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Payment Info -->
+    <div class="text-center my-5">
+        <h5>
+          <strong>Payment Status:</strong>
+          {% if payment_status == 'Paid' %}
+            <span class="text-success">Paid</span>
+          {% else %}
+            <span class="text-danger">Pending</span>
+          {% endif %}
+        </h5>
+        <h6 class="text-muted">
+          {% if payment_status == 'Paid' %}
+            Payment received via QR code scan.
+          {% else %}
+            Awaiting payment. Please scan the QR to pay.
+          {% endif %}
+        </h6>
+      
+        <div class="d-flex justify-content-center align-items-center flex-column mt-3">
+          <img src="{% static 'images/shopkart_payment_qr.png' %}" alt="QR Payment"
+               width="150" height="150" class="border rounded shadow-sm">
+          <p class="text-muted mt-2 small">Scan QR to Pay</p>
+        </div>
+      </div>
+      
+  </div>
+
+  <!-- Print Button -->
+  <div class="text-center mt-4 no-print">
+    <button class="btn btn-outline-primary px-4 py-2 rounded-3" onclick="printBill()">
+      <i class="bi bi-printer"></i> Print Receipt
+      </button>
+  </div>
+  
+      <!-- Minimal Print Section -->
+      <div id="essential-receipt" style="display: none;">
+        <div style="padding: 30px; max-width: 700px; margin: auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; border: 1px solid #ccc; border-radius: 12px; background-color: #f9f9f9; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+          
+          <h2 style="color: #28a745; text-align: center; margin-bottom: 10px;">🧾 Etsy Order Summary</h2>
+          <p style="text-align: center; font-size: 14px; color: #777;">Thank you for shopping with us!</p>
+      
+          <hr style="margin: 20px 0; border-top: 1px dashed #aaa;">
+      
+          <p style="font-size: 16px; margin-bottom: 8px;">
+            <strong>🗓 Order Date:</strong> {{ now|date:"d M, Y h:i A" }}
+          </p>
+      
+          <div style="margin-top: 20px;">
+            <h4 style="color: #333; border-bottom: 2px solid #28a745; padding-bottom: 5px;">🛒 Ordered Products:</h4>
+            <ul style="list-style: none; padding-left: 0; margin-top: 15px;">
+              {% for item in cart %}
+              <li style="margin-bottom: 10px; background: #fff; padding: 10px 15px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                <strong>{{ item.product.name }}</strong> — Qty: {{ item.product_qty }} — <span style="color: #28a745;">Rs. {{ item.total_cost|floatformat:2 }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+      
+          <hr style="margin: 25px 0; border-top: 1px solid #ddd;">
+      
+          <div style="font-size: 18px; color: #333; display: flex; justify-content: space-between;">
+            <div><strong>Total Products:</strong></div>
+            <div><span id="total_products_mini">0</span></div>
+          </div>
+          <div style="font-size: 20px; color: #000; font-weight: bold; display: flex; justify-content: space-between; margin-top: 10px;">
+            <div><strong>Net Total:</strong></div>
+            <div>Rs. <span id="net_total_mini">0.00</span></div>
+          </div>
+      
+          <hr style="margin: 25px 0; border-top: 1px solid #ddd;">
+      
+          <p style="text-align: center; font-size: 13px; color: #aaa;">This is a system-generated receipt.</p>
+        </div>
+      </div>
+      
+</section>
+
+<!-- Styling -->
+<style>
+  .table th, .table td {
+    vertical-align: middle;
+  }
+
+  .no-print {
+    display: block;
+  }
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+
+    #receipt-container, #receipt-container * {
+      visibility: visible;
+    }
+
+    #receipt-container {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+
+    .no-print {
+      display: none !important;
+    }
+  }
+</style>
+
+<!-- Script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const qtyElements = document.querySelectorAll('.qty');
+      const amtElements = document.querySelectorAll('.amt');
+  
+      let totalProducts = 0;
+      let totalAmount = 0;
+  
+      qtyElements.forEach((el, idx) => {
+        const qty = parseInt(el.textContent.trim()) || 0;
+        const amt = parseFloat(amtElements[idx].textContent.replace('Rs.', '').trim()) || 0;
+  
+        totalProducts += qty;
+        totalAmount += amt;
+      });
+  
+      document.getElementById("total_products").textContent = totalProducts;
+      document.getElementById("net_total").textContent = totalAmount.toFixed(2);
+  
+      // Also set values in the minimal section
+      document.getElementById("total_products_mini").textContent = totalProducts;
+      document.getElementById("net_total_mini").textContent = totalAmount.toFixed(2);
+    });
+  
+    function printBill() {
+      const printContent = document.getElementById("essential-receipt").innerHTML;
+      const originalContent = document.body.innerHTML;
+  
+      document.body.innerHTML = printContent;
+      window.print();
+      document.body.innerHTML = originalContent;
+      location.reload(); // Refresh to restore original view
+    }
+      function printEssentialReceipt() {
+    const receiptContent = document.getElementById("essential-receipt").innerHTML;
+    const printWindow = window.open('', '', 'width=800,height=600');
+    printWindow.document.write(`
+      <html>
+        <head><title>Print Receipt</title></head>
+        <body style="margin:0; padding:20px;">${receiptContent}</body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+    }
+  </script>
+  
+{% endblock content %}

@@ -1,0 +1,138 @@
+{% extends 'shop/layouts/main.html' %}
+{% block title %}
+  Cart
+{% endblock title %}
+{% load static %}
+
+{% block content %}
+
+<section class="bg-light py-5" style="min-height: 600px;">
+  <div class="container">
+    <!-- Logo-->
+<div class="text-center mb-4">
+  <img src="{% static 'images/logo.png' %}" alt="ShopKart Logo" class="img-fluid" style="max-height: 80px;">
+</div>
+    <div class="row">
+      <div class="col-12 mb-4">
+        <h2 class="text-center text-dark fw-bold">
+          <i class="bi bi-cart-check"></i> Your Shopping Cart
+        </h2>
+        <hr class="mx-auto" style="width: 50px; height: 3px; background-color: #28a745;">
+      </div>
+
+      <div class="table-responsive shadow rounded">
+        <table class="table table-hover align-middle text-center bg-white border">
+          <thead class="table-success text-dark">
+            <tr>
+              <th scope="col">Image</th>
+              <th scope="col">Product Name</th>
+              <th scope="col">Unit Price (Rs.)</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Amount (Rs.)</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart %}
+            <tr>
+              <td>
+                <img src="{{ item.product.product_image.url }}" class="rounded shadow-sm" height="75px" alt="{{ item.product.name }}">
+              </td>
+              <td class="fw-semibold">{{ item.product.name }}</td>
+              <td>₹ {{ item.product.selling_price|stringformat:"d" }}</td>
+              <td class="qty">{{ item.product_qty }}</td>
+              <td class="amt">₹ {{ item.total_cost|stringformat:"d" }}</td>
+              <td>
+                <a href="{% url 'remove_cart' item.id %}" class="btn btn-outline-danger btn-sm"
+                  onclick="return confirm('Are you sure you want to remove this item?')">
+                  <i class="bi bi-trash"></i> Remove
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot class="bg-light fw-bold">
+            <tr>
+              <td>Total Quantity</td>
+              <td colspan="2"></td>
+              <td id="total_products" class="text-success"></td>
+              <td colspan="2"></td>
+            </tr>
+            <tr>
+              <td>Total Amount</td>
+              <td colspan="3"></td>
+              <td id="net" class="text-primary"></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="text-center mt-4">
+        <a href="{% url 'order_details' %}" class="btn order-btn">
+          <i class="bi bi-cash-coin"></i> Proceed to Checkout
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<span id="cart-total" data-total="{{ totalPrice }}" style="display: none;"></span>
+<span id="cart-products" data-products="{{ totalProducts }}" style="display: none;"></span>
+
+<!-- Custom CSS -->
+<style>
+  .order-btn {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 12px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .order-btn:hover {
+    background: linear-gradient(45deg, #218838, #17a2b8);
+    transform: scale(1.05);
+    color: #fff;
+  }
+
+  .table th,
+  .table td {
+    vertical-align: middle;
+  }
+
+  .table tbody tr:hover {
+    background-color: #f1fdf3;
+  }
+
+  .table td img {
+    transition: transform 0.3s ease;
+  }
+
+  .table td img:hover {
+    transform: scale(1.05);
+  }
+</style>
+
+<!-- Script to Calculate Totals -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const amtNodes = document.querySelectorAll('.amt');
+    const qtyNodes = document.querySelectorAll('.qty');
+
+    const totalAmt = Array.from(amtNodes).reduce((acc, curr) => {
+      return acc + Number(curr.textContent.replace("₹", "").trim());
+    }, 0);
+
+    const totalQty = Array.from(qtyNodes).reduce((acc, curr) => {
+      return acc + Number(curr.textContent.trim());
+    }, 0);
+
+    document.getElementById("net").innerHTML = "₹ " + totalAmt;
+    document.getElementById("total_products").innerHTML = totalQty;
+  });
+</script>
+{% endblock content %}

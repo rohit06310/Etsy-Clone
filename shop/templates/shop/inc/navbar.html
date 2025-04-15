@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
+  <div class="container-fluid px-4">
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold text-warning" href="{% url 'home' %}">
+      <i class="fa fa-cart-plus me-1"></i> Etsy
+    </a>
+
+    <!-- Toggler for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Nav items -->
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+      <div class="navbar-nav align-items-lg-center gap-2">
+        <a class="nav-link text-light hover-effect" href="{% url 'home' %}">
+          <i class="fa fa-home me-1"></i> Home
+        </a>
+
+        {% if request.user.is_authenticated %}
+          <a class="nav-link text-light hover-effect" href="#">
+            <i class="fa fa-user me-1"></i> {{ request.user }}
+          </a>
+          <a class="nav-link text-light hover-effect" href="{% url 'logout' %}">
+            <i class="fa fa-sign-out me-1"></i> Logout
+          </a>
+        {% else %}
+          <a class="nav-link text-light hover-effect" href="{% url 'login' %}">
+            <i class="fa fa-sign-in me-1"></i> Login
+          </a>
+          <a class="nav-link text-light hover-effect" href="{% url 'register' %}">
+            <i class="fa fa-users me-1"></i> Register
+          </a>
+        {% endif %}
+
+        <a class="nav-link text-light hover-effect" href="{% url 'collections' %}">
+          <i class="fa fa-cubes me-1"></i> Collections
+        </a>
+        <a class="nav-link text-light hover-effect" href="{% url 'cart' %}">
+          <i class="fa fa-shopping-cart me-1"></i> Cart
+        </a>
+        <a class="nav-link text-light hover-effect" href="{% url 'fav_view_page' %}">
+          <i class="fa fa-heart me-1"></i> Favourite
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
